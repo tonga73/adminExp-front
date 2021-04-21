@@ -81,8 +81,8 @@ export default {
           to: '/record',
         },
       ],
-      miniVariant: false,
-      right: true,
+      miniVariant: true,
+      right: false,
       rightDrawer: false,
       title: 'Vuetify.js',
     }

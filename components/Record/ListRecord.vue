@@ -3,12 +3,10 @@
     <template>
       <v-card>
         <v-card-title>
-          Estado evolutivo de los casos
-          <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
-            label="Search"
+            label="Buscar"
             single-line
             hide-details
           ></v-text-field>
@@ -17,14 +15,19 @@
           :headers="headers"
           :items="records"
           :search="search"
-          item-key="name"
-          sort-by="name"
+          item-key="title"
+          sort-by="title"
           class="elevation-1"
           show-group-by
+          single-expand
+          :expanded.sync="expanded"
+          show-expand
         >
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title>My CRUD</v-toolbar-title>
+              <v-toolbar-title class="text-uppercase font-weight-thin">
+                Estado evolutivo de los casos</v-toolbar-title
+              >
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog" max-width="500px">
@@ -47,41 +50,54 @@
                   <v-card-text>
                     <v-container>
                       <v-row>
-                        <v-col cols="12" sm="6" md="4">
+                        <v-col cols="12" sm="6">
                           <v-text-field
                             v-model="editedItem.record_number"
                             label="EXP/Nº"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6" md="4">
+                        <v-col cols="12" sm="6">
                           <v-text-field
                             v-model="editedItem.title"
                             label="Nombre"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
+                        <v-col cols="12" sm="6">
+                          <v-select
                             v-model="editedItem.expertise_status"
+                            :items="select_expertise_status"
                             label="Estado Pericial"
-                          ></v-text-field>
+                          ></v-select>
                         </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
+                        <v-col cols="12" sm="6">
+                          <v-select
                             v-model="editedItem.payment_status"
+                            :items="select_payment_status"
                             label="Estado de Cobro"
-                          ></v-text-field>
+                          ></v-select>
                         </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
+                        <v-col cols="12" sm="6">
+                          <v-select
                             v-model="editedItem.arrangement_type"
-                            label="Tipo de Arreglo"
+                            :items="select_arrangement_type"
+                            label="Arreglo"
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            v-model="editedItem.action_lawyer"
+                            label="Acción Letrado"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field
-                            v-model="editedItem.updated_state"
-                            label="Estado Actualizado"
-                          ></v-text-field>
+                        <v-col cols="12">
+                          <v-textarea
+                            filled
+                            name="input-7-4"
+                            v-model="editedItem.comments"
+                            label="Comentarios"
+                            no-resize
+                            rows="3"
+                          ></v-textarea>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -90,26 +106,26 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="close">
-                      Cancel
+                      Cancelar
                     </v-btn>
-                    <v-btn color="blue darken-1" text @click="save">
-                      Save
+                    <v-btn color="green darken-3" @click="save">
+                      Guardar
                     </v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-              <v-dialog v-model="dialogDelete" max-width="500px">
+              <v-dialog v-model="dialogDelete" max-width="600px">
                 <v-card>
-                  <v-card-title class="headline"
-                    >Are you sure you want to delete this item?</v-card-title
+                  <v-card-title class="headline red--text"
+                    >¡Este elemento se elminará definitivamente!</v-card-title
                   >
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="closeDelete"
-                      >Cancel</v-btn
+                      >Cancelar</v-btn
                     >
-                    <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                      >OK</v-btn
+                    <v-btn color="red" @click="deleteItemConfirm"
+                      >CONFIRMAR</v-btn
                     >
                     <v-spacer></v-spacer>
                   </v-card-actions>
@@ -117,11 +133,38 @@
               </v-dialog>
             </v-toolbar>
           </template>
+          <template v-slot:item.payment_status="{ item }">
+            <v-chip
+              :color="getColor(item.payment_status)"
+              text-color="black"
+              dark
+            >
+              {{ item.payment_status }}
+            </v-chip>
+          </template>
           <template v-slot:item.actions="{ item }">
             <v-icon small class="mr-2" @click="editItem(item)">
               mdi-pencil
             </v-icon>
             <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+          </template>
+          <template v-slot:expanded-item="{ headers, item }">
+            <td
+              :colspan="headers.length / 2"
+              class="blue-grey darken-4 text-center"
+            >
+              COMENTARIOS
+              <br />
+              {{ item.comments }}
+            </td>
+            <td
+              :colspan="headers.length / 2"
+              class="blue-grey darken-4 text-center"
+            >
+              CIVIL I
+              <br />
+              OBERA
+            </td>
           </template>
         </v-data-table>
       </v-card>
@@ -133,9 +176,24 @@
 export default {
   data() {
     return {
+      expanded: [],
       search: '',
       dialog: false,
       dialogDelete: false,
+      select_expertise_status: [
+        'Aceptado',
+        'Realizado',
+        'Terminado',
+        'Imp-Respondido',
+      ],
+      select_payment_status: [
+        'FEO',
+        'ATENCION',
+        'NORMAL',
+        'TRATATIVA',
+        'COBRADO',
+      ],
+      select_arrangement_type: ['AH', 'AEJ', 'SPI', 'SC', 'SF'],
       headers: [
         {
           text: 'EXP/Nº',
@@ -143,32 +201,46 @@ export default {
           value: 'record_number',
           groupable: false,
         },
-        { text: 'Nombre', value: 'title', align: 'left', groupable: false },
+        { text: 'Carátula', value: 'title', align: 'left', groupable: false },
         {
           text: 'Estado Pericial',
           value: 'expertise_status',
-          align: 'right',
+          align: 'left',
           groupable: false,
+          cellClass: 'text-uppercase',
         },
         {
           text: 'Estado de Cobro',
           value: 'payment_status',
-          align: 'right',
+          align: 'center',
           groupable: false,
         },
         {
-          text: 'Tipo de Arreglo',
+          text: 'Arreglo',
           value: 'arrangement_type',
-          align: 'right',
+          align: 'center',
           groupable: false,
         },
         {
-          text: 'Estado Actualizado',
-          value: 'updated_state',
-          align: 'right',
+          text: 'Acción Letrado',
+          value: 'action_lawyer',
+          align: 'center',
           groupable: false,
         },
-        { text: 'Actions', value: 'actions', sortable: false },
+        {
+          text: 'Acciones',
+          value: 'actions',
+          align: 'center',
+          sortable: false,
+          groupable: false,
+        },
+        {
+          text: 'Comentarios',
+          value: 'data-table-expand',
+          align: 'center',
+          sortable: false,
+          groupable: false,
+        },
       ],
       records: [],
       editedIndex: -1,
@@ -178,7 +250,8 @@ export default {
         expertise_status: '',
         payment_status: '',
         arrangement_type: '',
-        updated_state: '',
+        action_lawyer: '',
+        comments: '',
       },
       defaultItem: {
         record_number: '',
@@ -186,7 +259,8 @@ export default {
         expertise_status: '',
         payment_status: '',
         arrangement_type: '',
-        updated_state: '',
+        action_lawyer: '',
+        comments: '',
       },
     }
   },
@@ -277,6 +351,14 @@ export default {
         } catch (error) {}
       }
       this.close()
+    },
+
+    getColor(payment_status) {
+      if (payment_status === 'FEO') return 'red'
+      else if (payment_status === 'ATENCION') return 'yellow'
+      else if (payment_status === 'NORMAL') return 'green'
+      else if (payment_status === 'TRATATIVA') return 'blue'
+      else return 'deep-purple'
     },
   },
 
