@@ -30,7 +30,7 @@
               >
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
-              <v-dialog v-model="dialog" max-width="500px">
+              <v-dialog v-model="dialog" max-width="900px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     color="primary"
@@ -50,44 +50,62 @@
                   <v-card-text>
                     <v-container>
                       <v-row>
-                        <v-col cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="2">
                           <v-text-field
                             v-model="editedItem.record_number"
                             label="EXP/Nº"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-text-field
                             v-model="editedItem.title"
-                            label="Nombre"
+                            label="Carátula"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="3">
+                          <v-select
+                            v-model="editedItem.dependency"
+                            :items="select_dependency"
+                            label="Dependencia"
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="3">
+                          <v-select
+                            v-model="editedItem.city"
+                            :items="select_city"
+                            label="Ciudad"
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
                           <v-select
                             v-model="editedItem.expertise_status"
                             :items="select_expertise_status"
                             label="Estado Pericial"
                           ></v-select>
                         </v-col>
-                        <v-col cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-select
                             v-model="editedItem.payment_status"
                             :items="select_payment_status"
                             label="Estado de Cobro"
                           ></v-select>
                         </v-col>
-                        <v-col cols="12" sm="6">
+                        <v-col cols="12" sm="6" md="4">
                           <v-select
                             v-model="editedItem.arrangement_type"
                             :items="select_arrangement_type"
                             label="Arreglo"
                           ></v-select>
                         </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-text-field
+                        <v-col cols="12">
+                          <v-textarea
+                            filled
+                            name="input-7-4"
                             v-model="editedItem.action_lawyer"
                             label="Acción Letrado"
-                          ></v-text-field>
+                            no-resize
+                            rows="1"
+                          ></v-textarea>
                         </v-col>
                         <v-col cols="12">
                           <v-textarea
@@ -151,19 +169,24 @@
           <template v-slot:expanded-item="{ headers, item }">
             <td
               :colspan="headers.length / 2"
-              class="blue-grey darken-4 text-center"
+              class="blue-grey darken-4 text-left pa-3"
             >
-              COMENTARIOS
+              <span class="blue-grey--text text--lighten-3">COMENTARIOS</span>
               <br />
-              {{ item.comments }}
+              <br />
+              <span> {{ item.comments }}</span>
             </td>
             <td
-              :colspan="headers.length / 2"
-              class="blue-grey darken-4 text-center"
+              :colspan="headers.length / 4"
+              class="blue-grey darken-4 text-center text-uppercase"
             >
-              CIVIL I
-              <br />
-              OBERA
+              {{ item.dependency }}
+            </td>
+            <td
+              :colspan="headers.length / 4"
+              class="blue-grey darken-4 text-center text-uppercase"
+            >
+              {{ item.city }}
             </td>
           </template>
         </v-data-table>
@@ -194,6 +217,8 @@ export default {
         'COBRADO',
       ],
       select_arrangement_type: ['AH', 'AEJ', 'SPI', 'SC', 'SF'],
+      select_dependency: ['Civil I', 'Familia'],
+      select_city: ['Oberá', 'Aristóbulo del Valle'],
       headers: [
         {
           text: 'EXP/Nº',
@@ -235,7 +260,7 @@ export default {
           groupable: false,
         },
         {
-          text: 'Comentarios',
+          text: 'Otros',
           value: 'data-table-expand',
           align: 'center',
           sortable: false,
@@ -252,6 +277,8 @@ export default {
         arrangement_type: '',
         action_lawyer: '',
         comments: '',
+        dependency: '',
+        city: '',
       },
       defaultItem: {
         record_number: '',
@@ -261,6 +288,8 @@ export default {
         arrangement_type: '',
         action_lawyer: '',
         comments: '',
+        dependency: '',
+        city: '',
       },
     }
   },
