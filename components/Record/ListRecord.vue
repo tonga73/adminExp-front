@@ -81,6 +81,7 @@
                             v-model="editedItem.expertise_status"
                             :items="select_expertise_status"
                             label="Estado Pericial"
+                            class="red--text"
                           ></v-select>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
@@ -191,7 +192,6 @@
           </template>
         </v-data-table>
       </v-card>
-      sjaopdsdpoajdsa
     </template>
   </v-container>
 </template>
@@ -204,6 +204,7 @@ export default {
       dialog: false,
       dialogDelete: false,
       select_expertise_status: [
+        'NO SIGED',
         'Aceptado',
         'Realizado',
         'Terminado',
@@ -217,7 +218,7 @@ export default {
         'COBRADO',
       ],
       select_arrangement_type: ['AH', 'AEJ', 'SPI', 'SC', 'SF'],
-      select_dependency: ['Civil I', 'Familia'],
+      select_dependency: ['Civil I', 'Laboral I', 'Familia'],
       select_city: ['Oberá', 'Aristóbulo del Valle'],
       headers: [
         {
