@@ -1,17 +1,10 @@
 <template>
   <v-app id="inspire">
-    <v-app-bar dense dark>
-      <v-btn icon>
-        <v-icon>mdi-view-dashboard</v-icon>
-      </v-btn>
-
-      <v-toolbar-title>Administrador de Expedientes</v-toolbar-title>
-    </v-app-bar>
-
     <v-main>
       <v-container>
         <v-row>
           <v-col cols="12" sm="2">
+            <img src="@/assets/img/logo.png" contain width="173.5" />
             <v-sheet rounded="lg" min-height="268">
               <!--  -->
             </v-sheet>
