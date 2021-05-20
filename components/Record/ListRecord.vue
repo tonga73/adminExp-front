@@ -1,5 +1,5 @@
 <template lang="html">
-  <v-container grid-list-xs>
+  <v-container grid-list-xs class="ma-0 pa-0">
     <template>
       <v-card>
         <v-card-title>
